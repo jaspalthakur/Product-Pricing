@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing · Monthly / Yearly</title>
+  <style>
+    /* ---------- RESET & BASE ---------- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(145deg, #f0f5fc 0%, #e9eef7 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      color: #0b1a2b;
+      line-height: 1.5;
+    }
+
+    .pricing-section {
+      max-width: 1180px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* ---------- HEADER ---------- */
+    .header {
+      text-align: center;
+      margin-bottom: 2.8rem;
+    }
+
+    .header h1 {
+      font-size: clamp(2rem, 5vw, 2.9rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #0b2b3b;
+      margin-bottom: 0.6rem;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      color: #3e5b6e;
+      max-width: 520px;
+      margin: 0 auto;
+      font-weight: 450;
+    }
+
+    /* ---------- BILLING TOGGLE ---------- */
+    .billing-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      margin: 1.8rem 0 2.8rem;
+    }
+
+    .billing-toggle button {
+      background: transparent;
+      border: 2px solid #cbdae6;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.7rem 1.8rem;
+      border-radius: 60px;
+      cursor: pointer;
+      color: #2e4d5e;
+      transition: all 0.2s ease;
+      letter-spacing: 0.2px;
+      line-height: 1.4;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    }
+
+    .billing-toggle button:hover {
+      border-color: #7ca3bb;
+      background: #f5fbff;
+    }
+
+    .billing-toggle button.active {
+      background: #1c5e42;
+      border-color: #1c5e42;
+      color: white;
+      box-shadow: 0 8px 18px -6px #1c5e4299;
+    }
+
+    .billing-toggle button:focus-visible {
+      outline: 3px solid #2b6f4b;
+      outline-offset: 2px;
+    }
+
+    /* ---------- CARD GRID ---------- */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.8rem;
+      align-items: stretch;
+      padding: 0.5rem 0;
+    }
+
+    /* ---------- CARD BASE ---------- */
+    .card {
+      position: relative;
+      background: white;
+      border-radius: 2rem;
+      padding: 2.2rem 1.8rem 2rem;
+      box-shadow: 0 10px 24px -8px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      isolation: isolate;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 44px -12px rgba(15, 23, 42, 0.22), 0 6px 14px -4px rgba(0, 0, 0, 0.08);
+    }
+
+    /* highlighted "Popular" plan */
+    .card.popular {
+      border: 3px solid #1c5e42;
+      background: linear-gradient(180deg, #ffffff 0%, #fafdfb 100%);
+      box-shadow: 0 14px 30px -8px rgba(28, 94, 66, 0.25);
+    }
+
+    .card.popular:hover {
+      box-shadow: 0 26px 48px -12px rgba(28, 94, 66, 0.35);
+    }
+
+    /* ---------- BADGE RIBBON ---------- */
+    .badge {
+      position: absolute;
+      top: -0.8rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1c5e42;
+      color: white;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      padding: 0.4rem 1.6rem;
+      border-radius: 40px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      box-shadow: 0 6px 14px -4px #1c5e4299;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .badge.value {
+      background: #b45a1c;
+      box-shadow: 0 6px 14px -4px #b45a1c99;
+    }
+
+    /* plan name & description */
+    .plan-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #12303f;
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .plan-desc {
+      color: #4f6c7e;
+      font-size: 0.94rem;
+      font-weight: 450;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+    }
+
+    /* price display */
+    .price-wrap {
+      margin-bottom: 1.8rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.2rem;
+      flex-wrap: wrap;
+    }
+
+    .currency {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1f4a5e;
+    }
+
+    .price {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #0b2b3b;
+      line-height: 1.1;
+    }
+
+    .unit {
+      color: #5d7a8c;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-left: 0.2rem;
+    }
+
+    /* feature list */
+    .features {
+      list-style: none;
+      margin: 0 0 2rem;
+      flex: 1;
+    }
+
+    .features li {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.4rem 0;
+      font-size: 0.95rem;
+      color: #1e3d4e;
+      font-weight: 450;
+    }
+
+    .features li::before {
+      content: "✓";
+      color: #1c5e42;
+      font-weight: 700;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .card.popular .features li::before {
+      color: #1c5e42;
+    }
+
+    /* call-to-action button */
+    .cta {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: #e2eef7;
+      color: #1c5e42;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.9rem 1.2rem;
+      border: none;
+      border-radius: 60px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      letter-spacing: 0.2px;
+      margin-top: auto;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+      border: 1px solid transparent;
+    }
+
+    .cta:hover {
+      background: #cde2f0;
+      transform: scale(1.02);
+      box-shadow: 0 8px 16px -6px rgba(28, 94, 66, 0.2);
+    }
+
+    .cta:active {
+      transform: scale(0.98);
+    }
+
+    .card.popular .cta {
+      background: #1c5e42;
+      color: white;
+      box-shadow: 0 8px 18px -6px #1c5e42b3;
+    }
+
+    .card.popular .cta:hover {
+      background: #144b34;
+      box-shadow: 0 12px 24px -6px #1c5e42cc;
+    }
+
+    .cta:focus-visible {
+      outline: 3px solid #2b6f4b;
+      outline-offset: 2px;
+    }
+
+    /* ---------- REDUCED MOTION ---------- */
+    @media (prefers-reduced-motion: reduce) {
+      .card {
+        transition: none;
+      }
+      .card:hover {
+        transform: none;
+        box-shadow: 0 10px 24px -8px rgba(15, 23, 42, 0.12);
+      }
+      .cta,
+      .billing-toggle button {
+        transition: none;
+      }
+      .cta:hover,
+      .billing-toggle button:hover {
+        transform: none;
+      }
+    }
+
+    /* ---------- RESPONSIVE ADJUSTMENTS ---------- */
+    @media (max-width: 360px) {
+      .billing-toggle button {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+      }
+      .card {
+        padding: 1.8rem 1.2rem 1.6rem;
+      }
+      .price {
+        font-size: 2.4rem;
+      }
+      .plan-name {
+        font-size: 1.3rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* ensure focus visible for all interactive elements */
+    button:focus-visible,
+    a:focus-visible,
+    .cta:focus-visible {
+      outline: 3px solid #2b6f4b;
+      outline-offset: 2px;
+      border-radius: 60px;
+    }
+
+    /* screen reader only utility (for toggle labels) */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+  </style>
+</head>
+<body>
+  <section class="pricing-section" aria-labelledby="pricing-heading">
+    <div class="header">
+      <h1 id="pricing-heading">Simple, transparent pricing</h1>
+      <p>Choose the plan that fits your team. Switch billing anytime.</p>
+    </div>
+
+    <!-- BILLING TOGGLE (real buttons, aria-pressed) -->
+    <div class="billing-toggle" role="group" aria-label="Billing cycle">
+      <button id="monthly" aria-pressed="true" class="active">Monthly</button>
+      <button id="yearly" aria-pressed="false">Yearly</button>
+    </div>
+
+    <!-- CARDS GRID -->
+    <div class="cards-grid">
+      <!-- BASIC PLAN -->
+      <article class="card" aria-labelledby="plan-basic">
+        <h2 id="plan-basic" class="plan-name">Starter</h2>
+        <p class="plan-desc">For individuals and small projects.</p>
+        <div class="price-wrap">
+          <span class="currency">$</span>
+          <span class="price" data-monthly="19" data-yearly="182">19</span>
+          <span class="unit">per month</span>
+        </div>
+        <ul class="features">
+          <li>5 projects</li>
+          <li>Basic analytics</li>
+          <li>24‑hour support</li>
+          <li>1 GB storage</li>
+        </ul>
+        <a href="#" class="cta" role="button">Get started</a>
+      </article>
+
+      <!-- POPULAR PLAN (highlighted, with badge) -->
+      <article class="card popular" aria-labelledby="plan-pro">
+        <div class="badge">Most popular</div>
+        <h2 id="plan-pro" class="plan-name">Pro</h2>
+        <p class="plan-desc">For growing teams that need more power.</p>
+        <div class="price-wrap">
+          <span class="currency">$</span>
+          <span class="price" data-monthly="49" data-yearly="470">49</span>
+          <span class="unit">per month</span>
+        </div>
+        <ul class="features">
+          <li>Unlimited projects</li>
+          <li>Advanced analytics</li>
+          <li>Priority support</li>
+          <li>10 GB storage</li>
+          <li>Team collaboration</li>
+        </ul>
+        <a href="#" class="cta" role="button">Start free trial</a>
+      </article>
+
+      <!-- ENTERPRISE PLAN (with Best Value badge) -->
+      <article class="card" aria-labelledby="plan-enterprise">
+        <div class="badge value">Best value</div>
+        <h2 id="plan-enterprise" class="plan-name">Enterprise</h2>
+        <p class="plan-desc">For large organisations with custom needs.</p>
+        <div class="price-wrap">
+          <span class="currency">$</span>
+          <span class="price" data-monthly="99" data-yearly="950">99</span>
+          <span class="unit">per month</span>
+        </div>
+        <ul class="features">
+          <li>Everything in Pro</li>
+          <li>Dedicated account manager</li>
+          <li>99.9% SLA</li>
+          <li>Unlimited storage</li>
+          <li>Custom integrations</li>
+        </ul>
+        <a href="#" class="cta" role="button">Contact sales</a>
+      </article>
+    </div>
+  </section>
+
+  <script>
+    (function() {
+      // ---------- DOM refs ----------
+      var buttons = {
+        monthly: document.getElementById("monthly"),
+        yearly: document.getElementById("yearly")
+      };
+      var prices = document.querySelectorAll(".price");
+      var units = document.querySelectorAll(".unit");
+
+      // ---------- CORE FUNCTION ----------
+      function setPeriod(period) {
+        // Update all price values from data attributes
+        prices.forEach(function (p) {
+          p.textContent = p.dataset[period];
+        });
+
+        // Update unit labels
+        units.forEach(function (u) {
+          u.textContent = period === "monthly" ? "per month" : "per year";
+        });
+
+        // Update button states: aria-pressed + active class
+        Object.keys(buttons).forEach(function (key) {
+          var isActive = (key === period);
+          buttons[key].setAttribute("aria-pressed", String(isActive));
+          buttons[key].classList.toggle("active", isActive);
+        });
+      }
+
+      // ---------- EVENT LISTENERS ----------
+      buttons.monthly.addEventListener("click", function () {
+        setPeriod("monthly");
+      });
+
+      buttons.yearly.addEventListener("click", function () {
+        setPeriod("yearly");
+      });
+
+      // ---------- INIT ----------
+      setPeriod("monthly");
+    })();
+  </script>
+</body>
+</html>
